@@ -1,4 +1,4 @@
-package io.github.asyncomatic.constants;
+package io.github.asyncomatic.common.constants;
 
 public class Delay {
     public static final long NONE = 0;

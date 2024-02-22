@@ -1,7 +1,7 @@
-package io.github.asyncomatic.annotations;
+package io.github.asyncomatic.common.annotations;
 
-import io.github.asyncomatic.constants.Condition;
-import io.github.asyncomatic.constants.Delay;
+import io.github.asyncomatic.common.constants.Condition;
+import io.github.asyncomatic.common.constants.Delay;
 
 import java.lang.annotation.*;
 

@@ -1,12 +1,12 @@
 package io.github.asyncomatic.workers.basic;
 
 import com.google.gson.Gson;
-import io.github.asyncomatic.constants.Condition;
+import io.github.asyncomatic.common.constants.Condition;
 import io.github.asyncomatic.context.Context;
 import io.github.asyncomatic.workers.Worker;
-import io.github.asyncomatic.annotations.Retry;
-import io.github.asyncomatic.annotations.Schedule;
-import io.github.asyncomatic.annotations.ScheduleList;
+import io.github.asyncomatic.common.annotations.Retry;
+import io.github.asyncomatic.common.annotations.Schedule;
+import io.github.asyncomatic.common.annotations.ScheduleList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

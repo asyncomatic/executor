@@ -1,4 +1,4 @@
-package io.github.asyncomatic.constants;
+package io.github.asyncomatic.common.constants;
 
 public class Condition {
     public static final int NONE = 0;
