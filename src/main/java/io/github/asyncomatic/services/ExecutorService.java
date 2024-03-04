@@ -9,8 +9,8 @@ import java.net.URI;
 public class ExecutorService {
     private static final String DEFAULT_SCHEDULER_SCHEME = "http://";
     private static final String DEFAULT_SCHEDULER_HOST = "127.0.0.1";
-    private static final String DEFAULT_SCHEDULER_PORT = ":8001";
-    private static final String DEFAULT_SCHEDULER_ROUTE = "/schedule";
+    private static final String DEFAULT_SCHEDULER_PORT = ":8080";
+    private static final String DEFAULT_SCHEDULER_ROUTE = "/jobs";
 
     private static final String DEFAULT_KAFKA_TOPIC = "aom.default.topic";
 
