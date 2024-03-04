@@ -6,7 +6,7 @@
 
     <groupId>io.github.asyncomatic</groupId>
     <artifactId>executor</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -65,4 +65,13 @@
             </plugin>
         </plugins>
     </build>
-</project>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/asyncomatic/executor</url>
+        </repository>
+    </distributionManagement>
+
+        </project>
