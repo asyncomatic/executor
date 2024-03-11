@@ -34,49 +34,60 @@ public class BasicWorker implements Worker {
 
     public void execute(String testJSON) {
         int status;
-        Method method = null;
 
         Context context = new Gson().fromJson(testJSON, Context.class);
         tests.add(context);
 
         while (tests.size() > 0) {
+            Method method = null;
             context = tests.poll();
 
             logger.info("Calling test method: " + context.getClassName() + "#" + context.getMethodName());
 
+            Class<?> testClazz;
             try {
-                Class<?> testClazz = Class.forName(context.getClassName());
-
-                Method[] declaredMethods = testClazz.getDeclaredMethods();
-                for(Method declaredMethod : declaredMethods) {
-                    if (declaredMethod.getName().equals(context.getMethodName())) {
-                        method = declaredMethod;
-                    }
+                testClazz = Class.forName(context.getClassName());
+            }catch(ClassNotFoundException e) {
+                continue;
+            }
+            Method[] declaredMethods = testClazz.getDeclaredMethods();
+            for(Method declaredMethod : declaredMethods) {
+                if (declaredMethod.getName().equals(context.getMethodName())) {
+                    method = declaredMethod;
                 }
+            }
 
-                if(method == null) {
-                    throw new NoSuchMethodException("Missing method: "
-                            + context.getClassName() + "#" + context.getMethodName());
-                }
+            if(method == null) {
+                logger.warn("Missing method: "
+                        + context.getClassName() + "#" + context.getMethodName());
+                continue;
+            }
 
-                Class[] parameterTypes = method.getParameterTypes();
+            Class[] parameterTypes = method.getParameterTypes();
 
-                if(parameterTypes.length == 0) {
-                    throw new NoSuchMethodException("Invalid signature for method: "
-                            + context.getClassName() + "#" + context.getMethodName());
-                }
+            if(parameterTypes.length == 0) {
+                logger.warn("Invalid signature for method: "
+                        + context.getClassName() + "#" + context.getMethodName());
+                continue;
+            }
 
-                Class <?> stateClazz = parameterTypes[0];
-                Object state;
+            Class <?> stateClazz = parameterTypes[0];
+            Object state;
 
-                if(context.getTestData() == null || context.getTestData().length() == 0) {
+            try {
+                if (context.getTestState() == null) {
                     state = stateClazz.getDeclaredConstructor().newInstance();
                 } else {
-                    state = new Gson().fromJson(context.getTestData(), stateClazz);
+                    state = new Gson().fromJson((String) context.getTestState(), stateClazz);
+//                    state = context.getTestState();
                 }
+            }catch(NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                logger.warn("Invalid state class specified: " + stateClazz.getName());
+                continue;
+            }
 
+            try {
                 method.invoke(testClazz.getDeclaredConstructor().newInstance(), stateClazz.cast(state));
-                context.setTestData(new Gson().toJson(stateClazz.cast(state)));
 
                 logger.info("Execution of test method (STATUS: PASSED): "
                         + context.getClassName() + "#" + context.getMethodName());
@@ -86,13 +97,14 @@ public class BasicWorker implements Worker {
                 logger.info("Execution of test method (STATUS: FAILED): "
                         + context.getClassName() + "#" + context.getMethodName());
                 status = Condition.FAILURE;
-//                e.getCause().printStackTrace();
 
-            } catch (ClassNotFoundException |  InstantiationException | NoSuchMethodException | IllegalAccessException e) {
-                e.printStackTrace();
+            } catch(NoSuchMethodException |  IllegalAccessException |InstantiationException e) {
+                logger.warn("Unknown error invoking method: "
+                        + context.getClassName() + "#" + context.getMethodName());
                 continue;
             }
 
+            context.setTestState(state);
             processAnnotations(status, method, context);
         }
     }

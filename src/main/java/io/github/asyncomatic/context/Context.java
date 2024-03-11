@@ -22,8 +22,8 @@ public class Context {
 
     @Getter
     @Setter
-    @SerializedName("data")
-    private String testData = "";
+    @SerializedName("state")
+    private Object testState;
 
     @Getter
     @Setter
