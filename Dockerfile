@@ -7,10 +7,12 @@ RUN mvn clean -U install
 
 FROM maven:3.9-eclipse-temurin-17
 LABEL org.opencontainers.image.source=https://github.com/asyncomatic/executor
-RUN mkdir -p /opt/app
 
-COPY --from=builder /tmp/executor/target/executor-1.0.0-SNAPSHOT-jar-with-dependencies.jar \
-    /opt/app/executor.jar
+COPY --from=builder /tmp/executor/target/asyncomatic-executor-0.0.1.jar .
+COPY --from=builder /tmp/executor/pom.xml .
 
-WORKDIR /opt/app
-ENTRYPOINT ["java", "-cp", "\"executor.jar\""]
+RUN mvn install:install-file \
+    -Dfile=asyncomatic-executor-0.0.1.jar \
+    -DpomFile=pom.xml
+
+RUN rm asyncomatic-executor-0.0.1.*
